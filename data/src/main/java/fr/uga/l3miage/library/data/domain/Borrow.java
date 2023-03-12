@@ -4,12 +4,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+//@Entity
+//@Table(name = "Borrow")
 public class Borrow {
     private Long id;
     private List<Book> books;
     private Date start;
     private Date requestedReturn;
+    //@OneToOne
     private User borrower;
+    //@OneToOne
     private Librarian librarian;
     private boolean finished;
 

@@ -1,11 +1,14 @@
 package fr.uga.l3miage.library.data.repo;
 
+import fr.uga.l3miage.library.data.domain.Person;
 import fr.uga.l3miage.library.data.domain.User;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+
 import java.util.List;
+import java.util.Date;
 
 @Repository
 public class UserRepository implements CRUDRepository<String, User> {
@@ -44,8 +47,14 @@ public class UserRepository implements CRUDRepository<String, User> {
      * @return
      */
     public List<User> findAllOlderThan(int age) {
-        // TODO
-        return null;
+        //Date currentDate = new Date();
+        
+        // TODO "SELECT p from Person p where p.TYPE=US and FUNCTION('DATEDIFF', 'YEAR', u.birth, CURRENT_DATE) > :age"
+        return entityManager.createQuery(
+        "SELECT u FROM User u WHERE FUNCTION('DATEDIFF', YEAR(u.birth), YEAR(CURRENT_DATE)) >= :age",
+                User.class)
+                .setParameter("age", age)
+                .getResultList();
     }
 
 }
