@@ -1,23 +1,52 @@
 package fr.uga.l3miage.library.data.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@NamedQueries({
+    @NamedQuery(    name="all-books",
+                    query="SELECT b FROM Book b ORDER BY b.title"),
+
+    @NamedQuery(    name = "find-books-by-title",
+                    query = "SELECT b FROM Book b WHERE LOWER(b.title) LIKE :pattern"),
+
+    @NamedQuery(    name = "find-books-by-author-and-title",
+                    query = "SELECT b FROM Book b JOIN b.authors a WHERE a.id=:authorId and LOWER(b.title) LIKE :pattern"),
+    @NamedQuery(    name = "find-books-by-authors-name",
+                    query = "SELECT b FROM Book b JOIN b.authors a WHERE LOWER(a.fullName) LIKE :pattern"),
+    @NamedQuery(    name = "find-books-by-several-authors",
+                    query = "SELECT b FROM Book b WHERE SIZE(b.authors) > :count ")
+})
+
+@Entity  // defini une classe java comme etant persistante 
+@Table(name = "Book")
 public class Book {
 
+    @Id  // definiton de la clé primaire
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // generation d id à chaque fois on incremente de 1
     private Long id;
     private String title;
     private long isbn;
     private String publisher;
+    @Column(name = "annee")
     private short year;
     private Language language;
 
-    @Transient
-    private Set<Author> authors;
 
+    @ManyToMany(mappedBy = "books")
+    private Set<Author> authors;
     public Long getId() {
         return id;
     }
